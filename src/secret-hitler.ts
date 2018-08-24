@@ -1,9 +1,13 @@
 import { LitElement, html } from '@polymer/lit-element';
 import { installRouter } from './router';
+import { firebase } from '@firebase/app';
 
 class SecretHitler extends LitElement {
   constructor() {
     super();
+    const config = fetch('firebase.json');
+    const app = firebase.initializeApp(config);
+    console.log(app);
     installRouter((location) => console.log(location));
   }
 

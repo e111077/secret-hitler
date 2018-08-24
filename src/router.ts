@@ -37,12 +37,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       store.dispatch(navigate(location));
     });
 */
-export const installRouter = (locationUpdatedCallback: (location:Location, event: Event|null) => void) => {
-  document.body.addEventListener('click', e => {
+export const installRouter = (locationUpdatedCallback: (location: Location, event: Event|null) => void) => {
+  document.body.addEventListener('click', (e) => {
     if (e.defaultPrevented || e.button !== 0 ||
         e.metaKey || e.ctrlKey || e.shiftKey) return;
 
-    const anchor = e.composedPath().find(n => n instanceof HTMLAnchorElement && n.tagName === 'A') as HTMLAnchorElement | undefined;
+    const anchor = e.composedPath().find((n) => n instanceof HTMLAnchorElement && n.tagName === 'A') as HTMLAnchorElement | undefined;
     if (!anchor || anchor.target ||
         anchor.hasAttribute('download') ||
         anchor.getAttribute('rel') === 'external') return;
@@ -61,6 +61,6 @@ export const installRouter = (locationUpdatedCallback: (location:Location, event
     }
   });
 
-  window.addEventListener('popstate', e => locationUpdatedCallback(window.location, e));
+  window.addEventListener('popstate', (e) => locationUpdatedCallback(window.location, e));
   locationUpdatedCallback(window.location, null /* event */);
 };
