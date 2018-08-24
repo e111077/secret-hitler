@@ -8,16 +8,18 @@
     "sourceMap": true,
     "inlineSources": true,
     "strict": true,
+    "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "outDir": "lib",
+    "outDir": "./dist/",
     "skipLibCheck": true
   },
   "include": [
     "custom_typings/**/*.ts",
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "./webpack.config.ts"
   ],
   "exclude": []
 }
