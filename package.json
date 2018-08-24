@@ -1,0 +1,35 @@
+{
+  "name": "secret-hitler",
+  "version": "0.0.1",
+  "description": "Secret Hitler game as a web game. Built as an exercise of LitElement",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/e111077/secret-hitler.git"
+  },
+  "keywords": [
+    "secret",
+    "hitler",
+    "webcomponents",
+    "html",
+    "LitElement",
+    "polymer",
+    "lit-html"
+  ],
+  "author": "emarquez@google.com catliu@google.com",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/e111077/secret-hitler/issues"
+  },
+  "homepage": "https://github.com/e111077/secret-hitler#readme",
+  "devDependencies": {
+    "tsc": "^1.20150623.0",
+    "webpack": "^4.17.1"
+  },
+  "dependencies": {
+    "@polymer/lit-element": "^0.5.2"
+  }
+}
