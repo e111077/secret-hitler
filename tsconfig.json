@@ -19,7 +19,8 @@
   "include": [
     "custom_typings/**/*.ts",
     "src/**/*.ts",
-    "./webpack.config.ts"
+    "./webpack.config.ts",
+    "external_libs/**/*.ts"
   ],
   "exclude": []
 }
