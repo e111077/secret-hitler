@@ -6,5 +6,5 @@
     80
   ],
   "git.confirmSync": false,
-  "tslint.autoFixOnSave": false
+  "tslint.autoFixOnSave": true
 }
