@@ -1,5 +1,5 @@
 import { LitElement, html } from '@polymer/lit-element';
-import { installRouter } from '../external_libs/pwa-helpers/src/router.js';
+import { installRouter } from './router';
 
 class SecretHitler extends LitElement {
   constructor() {
@@ -16,7 +16,7 @@ class SecretHitler extends LitElement {
 
   startGame() {
     console.log('do some stuff ehre');
-    // Blah send server request to get URL to join and display that.
+    // Blah send server request to get URL to join and display URL for joining.
   }
 }
 
