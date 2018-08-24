@@ -5,7 +5,7 @@ import { firebase } from '@firebase/app';
 class SecretHitler extends LitElement {
   constructor() {
     super();
-    const config = fetch('firebase.json');
+    const config = fetch('firebase_key.json');
     const app = firebase.initializeApp(config);
     console.log(app);
     installRouter((location) => console.log(location));
