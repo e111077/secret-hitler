@@ -1,5 +1,17 @@
 {
   "serve": {
     "npm": true
-  }
+  },
+  "entrypoint": "index.html",
+  "shell": "lib/secret-hitler.js",
+  "sources": [
+    "assets/**/*",
+    "node_modules/firebase/firebase-app.js",
+    "node_modules/firebase/firebase-auth.js",
+    "node_modules/firebase/firebase-firestore.js"
+  ],
+  "builds": [{
+    "name": "dist",
+    "preset": "es6-bundled"
+  }]
 }

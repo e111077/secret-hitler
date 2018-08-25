@@ -5,9 +5,11 @@
   "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "start": "polymer serve",
-    "lint": "tslint --project ./ --fix"
+    "build": "rm -rf build/ && tsc && polymer build --npm",
+    "serve": "polymer serve",
+    "start": "firebase init",
+    "lint": "tslint --project ./ --fix",
+    "clean": "rm -rf build lib node_modules"
   },
   "repository": {
     "type": "git",

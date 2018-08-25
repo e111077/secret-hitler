@@ -1,8 +1,0 @@
-{
-  "plugins": [
-    "dynamic-import-node"
-  ],
-  "presets": [
-    "es2017"
-  ]
-}

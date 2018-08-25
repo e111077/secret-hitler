@@ -1,24 +1,27 @@
 import { LitElement, html } from '@polymer/lit-element';
-import { installRouter } from './router';
-// import { firebase } from '@firebase/app';
-// import { FirebaseApp } from '@firebase/app-types';
+import { installRouter } from './router.js';
+import { GameStatus, Game } from './game.js';
 
+interface FirebaseConfig {
+  apiKey: string;
+  authDomain?: string;
+  databaseURL?: string;
+  projectId: string;
+}
+
+const JSON_CONFIG_PATH = '../assets/firebaseconfig.json';
 class SecretHitler extends LitElement {
-  gameId: string;
-  // app: FirebaseApp;
+  private gameId: string;
+  private app?: firebase.app.App;
+  private db?: firebase.firestore.Firestore;
+  private firebaseInitialized: Promise<boolean>;
+
   constructor() {
     super();
-    // const config = fetch('firebase_key.json').then((response) => {
-    //   console.log(response);
-    // });
-    // this.app = firebase.initializeApp(config);
+    this.firebaseInitialized = this.initFirebase();
+
     this.gameId = '';
-    installRouter((location) => {
-      console.log(location);
-      if (location.pathname.length > 1) {
-        this.gameId = location.pathname;
-      }
-    });
+    installRouter(this.removeAttribute.bind(this));
   }
 
   render() {
@@ -31,10 +34,35 @@ class SecretHitler extends LitElement {
     `;
   }
 
-  startGame() {
-    // Generate an actually random game id here.
-    window.location.replace('/testgameid');
-    console.log('do some stuff ehre');
+  async initFirebase() {
+    try {
+      const res = await fetch(JSON_CONFIG_PATH);
+      const config: FirebaseConfig = await res.json();
+      console.log(config);
+      this.app = firebase.initializeApp(config);
+      this.db = firebase.firestore();
+      this.db.settings({ timestampsInSnapshots: true });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async startGame() {
+    const isReady = await this.firebaseInitialized;
+    if (isReady && this.app && this.db) {
+      const game: Game = {
+        status: GameStatus.INITIALIZING
+      };
+      this.db.collection('games').add(game);
+    }
+  }
+
+  route(location: Location) {
+    console.log(location);
+    if (location.pathname.length > 1) {
+      this.gameId = location.pathname;
+    }
   }
 }
 

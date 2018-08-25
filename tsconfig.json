@@ -13,13 +13,14 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "outDir": "./dist/",
-    "skipLibCheck": true
+    "allowSyntheticDefaultImports": true,
+    "outDir": "lib",
+    "skipLibCheck": true,
+    "experimentalDecorators": true
   },
   "include": [
     "custom_typings/**/*.ts",
-    "src/**/*.ts",
-    "./webpack.config.ts"
+    "src/**/*.ts"
   ],
   "exclude": []
 }

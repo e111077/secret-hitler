@@ -1,4 +1,4 @@
-
+import * as fb from 'firebase';
 interface Event {
   composedPath(): EventTarget[];
 }
@@ -10,4 +10,8 @@ interface EventInit {
 interface HTMLElement {
   connectedCallback?(): void;
   disconnectedCallback?(): void;
+}
+
+declare global {
+  let firebase: typeof fb;
 }
