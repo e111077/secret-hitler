@@ -1,6 +1,8 @@
-import { LitElement, html } from '@polymer/lit-element';
-import { installRouter } from './router.js';
-import { GameStatus, Game } from './game.js';
+import { LitElement, html, property } from '@polymer/lit-element';
+import { installRouter, setPath } from './router.js';
+import { GameStatus } from './game.js';
+import './secret-hitler-landing.js';
+import { SecretHitlerLanding } from './secret-hitler-landing.js';
 
 interface FirebaseConfig {
   apiKey: string;
@@ -11,58 +13,88 @@ interface FirebaseConfig {
 
 const JSON_CONFIG_PATH = '../assets/firebaseconfig.json';
 class SecretHitler extends LitElement {
-  private gameId: string;
-  private app?: firebase.app.App;
+  @property({type: Object})
+  private gameStatus: GameStatus;
   private db?: firebase.firestore.Firestore;
-  private firebaseInitialized: Promise<boolean>;
+  private gameId?: string;
 
   constructor() {
     super();
-    this.firebaseInitialized = this.initFirebase();
-
-    this.gameId = '';
-    installRouter(this.removeAttribute.bind(this));
+    this.gameStatus = GameStatus.CREATED;
+    installRouter(this.route.bind(this));
+    this.initFirebase().catch(() => {
+      throw new Error('Issue in configuring firebase');
+    });
   }
 
   render() {
-    if (this.gameId) {
-      return html`Join game at ${window.location}`;
+    switch (this.gameStatus) {
+      case GameStatus.CREATED:
+        return html`
+          <div>Loading Files...</div>`;
+      case GameStatus.LANDING:
+        return html`
+          <secret-hitler-landing
+              id="landing"
+              .db="${this.db}"
+              .status="${this.gameStatus}"
+              @gameInitialized="${() => { this.onGameInitialized(); } }">
+          </secret-hitler-landing>`;
+      case GameStatus.LOBBY:
+        return html`
+          <div>Join the game at ${`${window.location.origin}/join/${this.gameId}`}</div>`;
+      default:
+        return html`<div>Game Status Error</div>`;
     }
-    return html`
-      <div>Secret Hilter</div>
-      <button @click="${() => this.startGame()}">Start a new game</button>
-    `;
+  }
+
+  private onGameInitialized() {
+    const landing = this.shadowRoot!.getElementById('landing') as SecretHitlerLanding | null;
+    if (!landing) {
+      throw Error('Landing element could not be found');
+    }
+
+    const gameReference = landing.gameReference;
+    const gameId = landing.gameId;
+
+    if (gameReference && gameId) {
+      gameReference.set({status: GameStatus.LOBBY}, {merge: true}).then(() => {
+        setPath(`/lobby/${gameId}`, {}, `Secret hitler - lobby ${gameId}`);
+        this.gameStatus = GameStatus.LOBBY;
+      }).catch(() => {
+        throw new Error('Cannot set Lobby on ' + gameReference.id);
+      });
+    }
   }
 
   async initFirebase() {
-    try {
       const res = await fetch(JSON_CONFIG_PATH);
       const config: FirebaseConfig = await res.json();
       console.log(config);
-      this.app = firebase.initializeApp(config);
+      firebase.initializeApp(config);
       this.db = firebase.firestore();
       this.db.settings({ timestampsInSnapshots: true });
-      return true;
-    } catch (e) {
-      return false;
+      this.gameStatus = GameStatus.LANDING;
+  }
+
+  private route(location: Location, event: Event) {
+    console.log(location, event);
+    const pathParts = this.splitLocation(location);
+
+    switch (pathParts[0]) {
+      case 'lobby':
+        this.gameId = pathParts[1];
+        break;
+      case 'join':
+        this.gameId = pathParts[1];
+        this.gameStatus = GameStatus.JOIN;
     }
   }
 
-  async startGame() {
-    const isReady = await this.firebaseInitialized;
-    if (isReady && this.app && this.db) {
-      const game: Game = {
-        status: GameStatus.INITIALIZING
-      };
-      this.db.collection('games').add(game);
-    }
-  }
-
-  route(location: Location) {
-    console.log(location);
-    if (location.pathname.length > 1) {
-      this.gameId = location.pathname;
-    }
+  private splitLocation(location: Location) {
+    const pathParts = location.pathname.split('/');
+    pathParts.splice(0, 1);
+    return pathParts;
   }
 }
 

@@ -37,7 +37,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       store.dispatch(navigate(location));
     });
 */
+
+let userCallback: ((location: Location, event: Event|null) => void) | undefined;
+
 export const installRouter = (locationUpdatedCallback: (location: Location, event: Event|null) => void) => {
+  userCallback = locationUpdatedCallback;
   document.body.addEventListener('click', (e) => {
     if (e.defaultPrevented || e.button !== 0 ||
         e.metaKey || e.ctrlKey || e.shiftKey) return;
@@ -64,3 +68,21 @@ export const installRouter = (locationUpdatedCallback: (location: Location, even
   window.addEventListener('popstate', (e) => locationUpdatedCallback(window.location, e));
   locationUpdatedCallback(window.location, null /* event */);
 };
+
+export function setPath(path: string, data: Object = {}, title: string = '') {
+  window.history.pushState(data, title, path);
+  if (!userCallback) {
+    console.log('please call installRouter first');
+    return;
+  }
+  userCallback(location, null);
+}
+
+export function appendPath(path: string, data: Object = {}, title: string = '') {
+  window.history.pushState(data, title, window.location.pathname + '/' + path);
+  if (!userCallback) {
+    console.log('please call installRouter first');
+    return;
+  }
+  userCallback(location, null);
+}

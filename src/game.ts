@@ -1,9 +1,11 @@
 export enum GameStatus {
-  INITIALIZING,
-  LOBBY
+  CREATED,
+  LANDING,
+  LOBBY,
+  JOIN,
 }
 
 export interface Game {
-  id?: string;
+  gameId?: string;
   status: GameStatus;
 }

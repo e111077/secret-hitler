@@ -1,17 +1,19 @@
 import * as fb from 'firebase';
-interface Event {
-  composedPath(): EventTarget[];
-}
 
-interface EventInit {
-  composed?: boolean;
-}
-
-interface HTMLElement {
-  connectedCallback?(): void;
-  disconnectedCallback?(): void;
-}
 
 declare global {
+  interface Event {
+    composedPath(): EventTarget[];
+  }
+
+  interface EventInit {
+    composed?: boolean;
+  }
+
+  interface HTMLElement {
+    connectedCallback?(): void;
+    disconnectedCallback?(): void;
+  }
+
   let firebase: typeof fb;
 }

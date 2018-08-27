@@ -13,6 +13,7 @@
     "no-internal-module": true,
     "no-trailing-whitespace": true,
     "no-var-keyword": true,
+    "no-floating-promises": true,
     "one-line": [
       true,
       "check-open-brace",
