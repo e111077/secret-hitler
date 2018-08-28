@@ -1,10 +1,8 @@
 import * as functions from 'firebase-functions';
 
 export enum GameStatus {
-  CREATED,
-  LANDING,
+  INITIALIZING,
   LOBBY,
-  JOIN,
 }
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';

@@ -1,8 +1,6 @@
 export enum GameStatus {
-  CREATED,
-  LANDING,
+  INITIALIZING,
   LOBBY,
-  JOIN,
 }
 
 export interface Game {

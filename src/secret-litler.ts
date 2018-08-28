@@ -1,8 +1,8 @@
 import { LitElement, html, property } from '@polymer/lit-element';
 import { installRouter, setPath } from './router.js';
 import { GameStatus } from './game.js';
-import './secret-hitler-landing.js';
-import { SecretHitlerLanding } from './secret-hitler-landing.js';
+import './secret-litler-landing.js';
+import { SecretLitlerLanding } from './secret-litler-landing.js';
 
 interface FirebaseConfig {
   apiKey: string;
@@ -11,45 +11,51 @@ interface FirebaseConfig {
   projectId: string;
 }
 
+enum ClientStatus {
+  LOADING,
+  LANDING,
+  LOBBY,
+}
+
 const JSON_CONFIG_PATH = '../assets/firebaseconfig.json';
-class SecretHitler extends LitElement {
+class SecretLitler extends LitElement {
   @property({type: Object})
-  private gameStatus: GameStatus;
+  private clientStatus: ClientStatus;
   private db?: firebase.firestore.Firestore;
   private gameId?: string;
+  private firebaseReady: Promise<void>;
 
   constructor() {
     super();
-    this.gameStatus = GameStatus.CREATED;
-    installRouter(this.route.bind(this));
-    this.initFirebase().catch(() => {
+    this.clientStatus = ClientStatus.LOADING;
+    this.firebaseReady = this.initFirebase().catch(() => {
       throw new Error('Issue in configuring firebase');
     });
+    installRouter(this.route.bind(this));
   }
 
   render() {
-    switch (this.gameStatus) {
-      case GameStatus.CREATED:
+    switch (this.clientStatus) {
+      case ClientStatus.LOADING:
         return html`
           <div>Loading Files...</div>`;
-      case GameStatus.LANDING:
+      case ClientStatus.LANDING:
         return html`
-          <secret-hitler-landing
+          <secret-litler-landing
               id="landing"
               .db="${this.db}"
-              .status="${this.gameStatus}"
               @gameInitialized="${() => { this.onGameInitialized(); } }">
-          </secret-hitler-landing>`;
-      case GameStatus.LOBBY:
+          </secret-litler-landing>`;
+      case ClientStatus.LOBBY:
         return html`
-          <div>Join the game at ${`${window.location.origin}/join/${this.gameId}`}</div>`;
+          <div>Join the game at ${`${window.location.origin} with Game ID: ${this.gameId}`}</div>`;
       default:
         return html`<div>Game Status Error</div>`;
     }
   }
 
   private onGameInitialized() {
-    const landing = this.shadowRoot!.getElementById('landing') as SecretHitlerLanding | null;
+    const landing = this.shadowRoot!.getElementById('landing') as SecretLitlerLanding | null;
     if (!landing) {
       throw Error('Landing element could not be found');
     }
@@ -59,8 +65,7 @@ class SecretHitler extends LitElement {
 
     if (gameReference && gameId) {
       gameReference.set({status: GameStatus.LOBBY}, {merge: true}).then(() => {
-        setPath(`/lobby/${gameId}`, {}, `Secret hitler - lobby ${gameId}`);
-        this.gameStatus = GameStatus.LOBBY;
+        setPath(`/lobby/${gameId}`, {}, `Secret litler - lobby ${gameId}`);
       }).catch(() => {
         throw new Error('Cannot set Lobby on ' + gameReference.id);
       });
@@ -68,26 +73,26 @@ class SecretHitler extends LitElement {
   }
 
   async initFirebase() {
-      const res = await fetch(JSON_CONFIG_PATH);
-      const config: FirebaseConfig = await res.json();
-      console.log(config);
-      firebase.initializeApp(config);
-      this.db = firebase.firestore();
-      this.db.settings({ timestampsInSnapshots: true });
-      this.gameStatus = GameStatus.LANDING;
+    const res = await fetch(JSON_CONFIG_PATH);
+    const config: FirebaseConfig = await res.json();
+    firebase.initializeApp(config);
+    this.db = firebase.firestore();
+    this.db.settings({ timestampsInSnapshots: true });
   }
 
-  private route(location: Location, event: Event) {
-    console.log(location, event);
+  private async route(location: Location) {
     const pathParts = this.splitLocation(location);
 
     switch (pathParts[0]) {
-      case 'lobby':
-        this.gameId = pathParts[1];
+      case '':
+        await this.firebaseReady;
+        this.clientStatus = ClientStatus.LANDING;
         break;
-      case 'join':
+      case 'lobby':
+        await this.firebaseReady;
         this.gameId = pathParts[1];
-        this.gameStatus = GameStatus.JOIN;
+        this.clientStatus = ClientStatus.LOBBY;
+        break;
     }
   }
 
@@ -98,4 +103,4 @@ class SecretHitler extends LitElement {
   }
 }
 
-customElements.define('secret-hitler', SecretHitler);
+customElements.define('secret-litler', SecretLitler);

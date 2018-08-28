@@ -3,7 +3,7 @@
     "npm": true
   },
   "entrypoint": "index.html",
-  "shell": "lib/secret-hitler.js",
+  "shell": "lib/secret-litler.js",
   "sources": [
     "assets/**/*",
     "node_modules/firebase/firebase-app.js",

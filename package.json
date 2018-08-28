@@ -1,5 +1,5 @@
 {
-  "name": "secret-hitler",
+  "name": "secret-litler",
   "version": "0.0.1",
   "description": "Secret Hitler game as a web game. Built as an exercise of LitElement",
   "main": "index.html",
@@ -13,11 +13,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/e111077/secret-hitler.git"
+    "url": "git+https://github.com/e111077/secret-litler.git"
   },
   "keywords": [
     "secret",
-    "hitler",
+    "litler",
     "webcomponents",
     "html",
     "LitElement",
@@ -27,9 +27,9 @@
   "author": "emarquez@google.com catliu@google.com",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/e111077/secret-hitler/issues"
+    "url": "https://github.com/e111077/secret-litler/issues"
   },
-  "homepage": "https://github.com/e111077/secret-hitler#readme",
+  "homepage": "https://github.com/e111077/secret-litler#readme",
   "devDependencies": {
     "@types/node": "^10.9.1",
     "babel-plugin-dynamic-import-node": "^2.0.0",
